@@ -4,11 +4,12 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 import fr.ajc.jpa.live.entity.User;
+import fr.ajc.jpa.live.menu.Menu;
 import fr.ajc.jpa.live.repository.UtilisateurRepository;
 
 public class Main {
 
-	static UtilisateurRepository userRepo;
+	public static UtilisateurRepository userRepo;
 
 	public static void main(String[] args) {
 		// La configuration dans persistence.xml (<persistence-unit>)
@@ -24,7 +25,8 @@ public class Main {
 		// update();
 		// delete();
 
-		System.out.println(userRepo.findByUsername("invite"));
+//		System.out.println(userRepo.findByUsernameAndPassword("sedgujhfk","invitemdp"));
+//		Menu.start();
 		
 
 		System.out.println("Connexion ok");
@@ -32,7 +34,7 @@ public class Main {
 
 	public static void create() {
 		// CREATE
-		User user = new User(2, "invite", "invitemdp");
+		User user = new User("newUser", "newUsermdp");
 
 		if (userRepo.create(user)) {
 			System.out.println("Utilisateur crée !!");

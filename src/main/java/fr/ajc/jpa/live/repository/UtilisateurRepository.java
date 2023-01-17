@@ -240,4 +240,36 @@ public class UtilisateurRepository {
 		
 		return users;
 	}
+
+	public List<User> findByUsernameAndPassword(String identifiant, String mdp) {
+		List<User> users = null;
+		EntityManager em = null;
+		EntityTransaction tx = null;
+		try {
+			em = emf.createEntityManager();
+			tx = em.getTransaction();
+			tx.begin();
+
+			// JPQL => Avec le nom des classes et des attributs JAVA !!!
+			TypedQuery<User> q = em.createQuery(
+					"SELECT u FROM User u WHERE u.username = :identifiant and u.pwd = :mdp", User.class);
+			
+			q.setParameter("identifiant", identifiant);
+			q.setParameter("mdp", mdp);
+
+			users = q.getResultList();
+
+			tx.commit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			if (tx != null && tx.isActive()) {
+				tx.rollback();
+			}
+		} finally {
+			if (em != null) {
+				em.close();
+			}
+		}
+		return users;
+	}
 }
