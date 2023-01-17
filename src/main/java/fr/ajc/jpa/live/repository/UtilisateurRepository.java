@@ -1,10 +1,15 @@
 package fr.ajc.jpa.live.repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
-import fr.ajc.jpa.live.entity.Utilisateur;
+import fr.ajc.jpa.live.entity.User;
 
 public class UtilisateurRepository {
 
@@ -14,7 +19,7 @@ public class UtilisateurRepository {
 		this.emf = emf;
 	}
 	
-	public Boolean create(Utilisateur user) {
+	public Boolean create(User user) {
 		EntityManager em = null;
 		EntityTransaction tx = null;
 		Boolean created = true;
@@ -45,10 +50,10 @@ public class UtilisateurRepository {
 		return created;
 	}
 	
-	public Utilisateur findById(Integer id) {
+	public User findById(Integer id) {
 		EntityManager em = null;
 		EntityTransaction tx = null;
-		Utilisateur user = null;
+		User user = null;
 		try {
 			// Créer un EntityManager
 			em = emf.createEntityManager();
@@ -56,7 +61,7 @@ public class UtilisateurRepository {
 			tx.begin();
 			
 			// Requètes avec le EntityManager
-			user = em.find(Utilisateur.class,id);			
+			user = em.find(User.class,id);			
 			
 			tx.commit();			
 		} catch(Exception e) {
@@ -73,7 +78,7 @@ public class UtilisateurRepository {
 		return user;
 	}
 
-	public Boolean update(Utilisateur user) {
+	public Boolean update(User user) {
 		EntityManager em = null;
 		EntityTransaction tx = null;
 		Boolean updated = true;
@@ -116,7 +121,7 @@ public class UtilisateurRepository {
 			tx.begin();
 			
 			// Requètes avec le EntityManager
-			Utilisateur user = em.find(Utilisateur.class, id);
+			User user = em.find(User.class, id);
 			em.remove(user);
 			
 			
@@ -134,5 +139,105 @@ public class UtilisateurRepository {
 		}
 		
 		return deleted;
+	}
+
+	// Requete SQL
+	
+	//findAll
+	
+	public List<User> findAllSQL() {
+		EntityManager em = null;
+		EntityTransaction tx = null;
+		List<User> users = new ArrayList<>();
+		try {
+			
+			// Créer un EntityManager
+			em = emf.createEntityManager();
+			tx = em.getTransaction();
+			tx.begin();
+			
+			// Requètes avec le EntityManager
+			Query query = em.createNativeQuery("select id,username,password from Utilisateur",User.class);
+			
+			users = query.getResultList();
+			
+			tx.commit();			
+		} catch(Exception e) {
+			// Erreur bdd
+			if(tx!=null && tx.isActive()) {
+				tx.rollback();
+			}		
+		} finally {
+			if(em!=null) {
+				em.close();
+			}
+		}
+		
+		return users;
+	}
+
+	public List<User> findAllJPQL() {
+		EntityManager em = null;
+		EntityTransaction tx = null;
+		List<User> users = new ArrayList<>();
+		try {
+			
+			// Créer un EntityManager
+			em = emf.createEntityManager();
+			tx = em.getTransaction();
+			tx.begin();
+			
+			// Requètes avec le EntityManager
+			TypedQuery<User> tq = em.createQuery("SELECT u FROM User u",User.class);
+			
+			users = tq.getResultList();
+			
+			tx.commit();			
+		} catch(Exception e) {
+			// Erreur bdd
+			if(tx!=null && tx.isActive()) {
+				tx.rollback();
+			}		
+		} finally {
+			if(em!=null) {
+				em.close();
+			}
+		}
+		
+		return users;
+	}
+	
+	// JPQL
+	public List<User> findByUsername(String username) {
+		EntityManager em = null;
+		EntityTransaction tx = null;
+		List<User> users = new ArrayList<>();
+		try {
+			
+			// Créer un EntityManager
+			em = emf.createEntityManager();
+			tx = em.getTransaction();
+			tx.begin();
+			
+			// Requètes avec le EntityManager
+			TypedQuery<User> tq = em.createQuery("SELECT u FROM User u WHERE u.username=:username",User.class);
+			
+			tq.setParameter("username", username);
+			
+			users = tq.getResultList();
+			
+			tx.commit();			
+		} catch(Exception e) {
+			// Erreur bdd
+			if(tx!=null && tx.isActive()) {
+				tx.rollback();
+			}		
+		} finally {
+			if(em!=null) {
+				em.close();
+			}
+		}
+		
+		return users;
 	}
 }

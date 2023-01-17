@@ -1,25 +1,30 @@
 package fr.ajc.jpa.live.entity;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Entity // Doit être gérée en BDD (=> il doit y avoir une table correspondante)
-public class Utilisateur {
+@Table(name="Utilisateur")// La table en bdd
+public class User {
 
 	@Id // Clé primaire
 	private Integer id;
 	
 	private String username;
-	private String password;
+
+	@Column(name="password")// La colonne en bdd
+	private String pwd;
 	
-	public Utilisateur() {
+	public User() {
 		super();
 	}
-	public Utilisateur(Integer id, String username, String password) {
+	public User(Integer id, String username, String password) {
 		super();
 		this.id = id;
 		this.username = username;
-		this.password = password;
+		this.pwd = password;
 	}
 	public Integer getId() {
 		return id;
@@ -34,14 +39,14 @@ public class Utilisateur {
 		this.username = username;
 	}
 	public String getPassword() {
-		return password;
+		return pwd;
 	}
 	public void setPassword(String password) {
-		this.password = password;
+		this.pwd = password;
 	}
 	@Override
 	public String toString() {
-		return "Utilisateur [id=" + id + ", username=" + username + ", password=" + password + "]";
+		return "User [id=" + id + ", username=" + username + ", password=" + pwd + "]";
 	}
 	
 	
