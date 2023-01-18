@@ -1,9 +1,12 @@
 package fr.ajc.jpa.live.entity;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -23,6 +26,9 @@ public class Formateur {
 	@JoinColumn(name="utilisateur_id") // JoinColumn => porte la relation (= celui qui a la FK dans la table)
 	private User userFormateur;
 	
+	@OneToMany(mappedBy="formateur")
+	private List<Module> modules;
+	
 	public Formateur() {
 		super();
 	}
@@ -33,6 +39,11 @@ public class Formateur {
 		this.prenom = prenom;
 	}
 	
+	public Formateur(String nom, String prenom) {
+		super();
+		this.nom = nom;
+		this.prenom = prenom;
+	}
 	public Formateur(String nom, String prenom, User userFormateur) {
 		super();
 		this.nom = nom;
@@ -63,6 +74,13 @@ public class Formateur {
 	}
 	public void setUserFormateur(User userFormateur) {
 		this.userFormateur = userFormateur;
+	}
+	
+	public List<Module> getModules() {
+		return modules;
+	}
+	public void setModules(List<Module> modules) {
+		this.modules = modules;
 	}
 	@Override
 	public String toString() {

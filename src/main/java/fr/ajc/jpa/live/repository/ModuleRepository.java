@@ -1,22 +1,27 @@
 package fr.ajc.jpa.live.repository;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 
-import fr.ajc.jpa.live.entity.Formateur;
+import fr.ajc.jpa.live.entity.Module;
 
-public class FormateurRepository {
+public class ModuleRepository {
 
 	private EntityManagerFactory emf;
 
-	public FormateurRepository(EntityManagerFactory emf) {
+	public ModuleRepository(EntityManagerFactory emf) {
 		super();
 		this.emf = emf;
 	}
 
-	public Boolean create(Formateur formateur) {
+	// Create
+	public Boolean create(Module mod) {
 		EntityManager em = null;
 		EntityTransaction tx = null;
 		Boolean created = true;
@@ -28,7 +33,7 @@ public class FormateurRepository {
 			tx.begin();
 
 			// Requètes avec le EntityManager
-			em.persist(formateur);
+			em.persist(mod);
 
 			tx.commit();
 		} catch (Exception e) {
@@ -47,10 +52,10 @@ public class FormateurRepository {
 		return created;
 	}
 
-	public Boolean createWithUser(Formateur formateur) {
+	public Boolean update(Module mod) {
 		EntityManager em = null;
 		EntityTransaction tx = null;
-		Boolean created = true;
+		Boolean updated = true;
 		try {
 
 			// Créer un EntityManager
@@ -59,33 +64,28 @@ public class FormateurRepository {
 			tx.begin();
 
 			// Requètes avec le EntityManager
-			// Créer l'user
-			em.persist(formateur.getUserFormateur());
-
-			// Créer le formateur
-			em.persist(formateur);
+			em.merge(mod);
 
 			tx.commit();
 		} catch (Exception e) {
-			created = false;
+			updated = false;
 			// Erreur bdd
 			if (tx != null && tx.isActive()) {
 				tx.rollback();
 			}
-			e.printStackTrace();
 		} finally {
 			if (em != null) {
 				em.close();
 			}
 		}
 
-		return created;
+		return updated;
 	}
 
-	public Formateur findById(Integer id) {
+	public Module findById(Integer id) {
 		EntityManager em = null;
 		EntityTransaction tx = null;
-		Formateur form = null;
+		Module mod = null;
 		try {
 			// Créer un EntityManager
 			em = emf.createEntityManager();
@@ -93,7 +93,7 @@ public class FormateurRepository {
 			tx.begin();
 
 			// Requètes avec le EntityManager
-			form = em.find(Formateur.class, id);
+			mod = em.find(Module.class, id);
 
 			tx.commit();
 		} catch (Exception e) {
@@ -107,13 +107,14 @@ public class FormateurRepository {
 			}
 		}
 
-		return form;
+		return mod;
 	}
 
-	public Formateur findByIdAndFetchModules(Integer id) {
+	// modules de la journée
+	public List<Module> findByDate(LocalDate date) {
+		List<Module> mods = new ArrayList<Module>();
 		EntityManager em = null;
 		EntityTransaction tx = null;
-		Formateur form = null;
 		try {
 			// Créer un EntityManager
 			em = emf.createEntityManager();
@@ -121,11 +122,12 @@ public class FormateurRepository {
 			tx.begin();
 
 			// Requètes avec le EntityManager
-			TypedQuery<Formateur> query = em.createQuery(
-					"SELECT form FROM Formateur form LEFT JOIN FETCH form.modules WHERE form.id=:id", Formateur.class);
-			query.setParameter("id", id);
+			TypedQuery<Module> query = em
+					.createQuery("SELECT m FROM Module m WHERE :date>=m.dateDebut and :date<=m.dateFin", Module.class);
 
-			form = query.getSingleResult();
+			query.setParameter("date",date);
+			
+			mods = query.getResultList();
 
 			tx.commit();
 		} catch (Exception e) {
@@ -138,7 +140,7 @@ public class FormateurRepository {
 				em.close();
 			}
 		}
-
-		return form;
+		return mods;
 	}
+
 }

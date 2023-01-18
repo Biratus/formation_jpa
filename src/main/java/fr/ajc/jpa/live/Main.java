@@ -1,92 +1,67 @@
 package fr.ajc.jpa.live;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import fr.ajc.jpa.live.entity.Formateur;
+import fr.ajc.jpa.live.entity.Module;
 import fr.ajc.jpa.live.entity.User;
 import fr.ajc.jpa.live.repository.FormateurRepository;
+import fr.ajc.jpa.live.repository.ModuleRepository;
 import fr.ajc.jpa.live.repository.StagiaireRepository;
 import fr.ajc.jpa.live.repository.UtilisateurRepository;
+
 
 public class Main {
 
 	public static UtilisateurRepository userRepo;
 	public static FormateurRepository formateurRepo;
 	public static StagiaireRepository stagiaireRepo;
+	public static ModuleRepository moduleRepo;
 
 	public static void main(String[] args) {
 		// La configuration dans persistence.xml (<persistence-unit>)
 		EntityManagerFactory emf = Persistence.createEntityManagerFactory("formation_jpa");
 
-		// Instanciation du repository
-		userRepo = new UtilisateurRepository(emf);
-		formateurRepo = new FormateurRepository(emf);
-		stagiaireRepo = new StagiaireRepository(emf);
-
-		Formateur f = formateurRepo.findById(1);
+		initRepos(emf);
 		
-		System.out.println(f);
+		List<Module> mods = moduleRepo.findByDate(LocalDate.of(2023, 1,28));
+		System.out.println("---------------");
+		System.out.println(mods);
 		
-		System.out.println("----------");
-		System.out.println(f.getUserFormateur());
-		
-		
-//		User user = new User("formateur","formateurmdp");
-//		Formateur f = new Formateur("nomFormateur","prenomForm",user);
-//		user.setFormateur(f);
+//		Formateur form = formateurRepo.findById(1);
 //		
+////		System.out.println(form.getModules());
+//
+//		Module m = new Module("Spring",LocalDate.of(2023, 1, 25),LocalDate.of(2023, 2, 1),form);
 //		
-//		if(formateurRepo.createWithUser(f)) {
-//			System.out.println("Formateur crée !");
+//		if(moduleRepo.create(m)) {
+//			System.out.println("Module ok");
+//			
+//			form = formateurRepo.findByIdAndFetchModules(1);
+//			System.out.println("---------------");
+//			
+//			System.out.println(form.getModules());
+//			
 //		} else {
-//			System.out.println("Problème lors de la création du formateur " + f);
+//			System.out.println("module ko");
 //		}
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		// Test creation du formateur
-//		User u = userRepo.findById(2);
-		// user est detached
-		
-		
-//		Stagiaire s = new Stagiaire("Dupont","Michel",u);
-//		
-//		if(stagiaireRepo.create(s)) {
-//			System.out.println("Stagiaire crée !");
-//		} else {
-//			System.out.println("Problème lors de la création du stagiaire "+s);
-//		}
-
-//		Formateur form = new Formateur("Birette","Clément",u);
-//		
-//		if(formateurRepo.create(form)) {
-//			System.out.println("Formateur crée !");
-//		} else {
-//			System.out.println("Problème lors de la création du formateur "+form);
-//		}
-
-		// Tests CRUD
-//		 create();
-		// read();
-		// update();
-		// delete();
-
-//		System.out.println(userRepo.findByUsernameAndPassword("sedgujhfk","invitemdp"));
 //		Menu.start();
 
 		System.out.println("Connexion ok");
 	}
 
+	public static void initRepos(EntityManagerFactory emf) {
+		// Instanciation du repository
+		userRepo = new UtilisateurRepository(emf);
+		formateurRepo = new FormateurRepository(emf);
+		stagiaireRepo = new StagiaireRepository(emf);
+		moduleRepo = new ModuleRepository(emf);
+	}
+	
 	public static void create() {
 		// CREATE
 		User user = new User("newUser", "newUsermdp");
