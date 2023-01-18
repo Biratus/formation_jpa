@@ -41,6 +41,7 @@ public class UtilisateurRepository {
 			if(tx!=null && tx.isActive()) {
 				tx.rollback();
 			}		
+			e.printStackTrace();
 		} finally {
 			if(em!=null) {
 				em.close();
@@ -141,6 +142,39 @@ public class UtilisateurRepository {
 		return deleted;
 	}
 
+	public Boolean delete(User user) {
+		EntityManager em = null;
+		EntityTransaction tx = null;
+		Boolean deleted = true;
+		try {
+			
+			// Créer un EntityManager
+			em = emf.createEntityManager();
+			tx = em.getTransaction();
+			tx.begin();
+			
+			// Requètes avec le EntityManager
+			user = em.find(User.class, user.getId());
+			em.remove(user);
+			
+			
+			tx.commit();			
+		} catch(Exception e) {
+			deleted = false;
+			e.printStackTrace();
+			// Erreur bdd
+			if(tx!=null && tx.isActive()) {
+				tx.rollback();
+			}		
+		} finally {
+			if(em!=null) {
+				em.close();
+			}
+		}
+		
+		return deleted;
+	}
+	
 	// Requete SQL
 	
 	//findAll
