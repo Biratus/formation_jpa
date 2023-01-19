@@ -1,12 +1,14 @@
 package fr.ajc.jpa.live.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
@@ -30,6 +32,10 @@ public class Module {
 	@ManyToOne
 	@JoinColumn(name="formateur_id")//La colonne dans la table {module} qui fait la jointure vers l'autre table {formateur}
 	private Formateur formateur;
+	
+	
+	@ManyToMany(mappedBy="modules")
+	private List<Stagiaire> stagiaires;
 
 	public Module() {
 		super();
@@ -88,6 +94,15 @@ public class Module {
 
 	public void setFormateur(Formateur formateur) {
 		this.formateur = formateur;
+	}
+	
+
+	public List<Stagiaire> getStagiaires() {
+		return stagiaires;
+	}
+
+	public void setStagiaires(List<Stagiaire> stagiaires) {
+		this.stagiaires = stagiaires;
 	}
 
 	@Override

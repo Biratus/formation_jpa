@@ -6,8 +6,11 @@ import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import fr.ajc.jpa.live.entity.Formateur;
+import fr.ajc.jpa.live.entity.Stagiaire;
 import fr.ajc.jpa.live.entity.Module;
 import fr.ajc.jpa.live.entity.User;
+import fr.ajc.jpa.live.repository.EntityRepository;
 import fr.ajc.jpa.live.repository.FormateurRepository;
 import fr.ajc.jpa.live.repository.ModuleRepository;
 import fr.ajc.jpa.live.repository.StagiaireRepository;
@@ -27,26 +30,26 @@ public class Main {
 
 		initRepos(emf);
 		
-		List<Module> mods = moduleRepo.findByDate(LocalDate.of(2023, 1,28));
-		System.out.println("---------------");
-		System.out.println(mods);
+		// Connexion Stagiaire-Module
+		// Affecter un module à un stagiaire
+		Stagiaire s = stagiaireRepo.findByIdAndFetchModules(3);
+		Module m = moduleRepo.findById(1);
 		
-//		Formateur form = formateurRepo.findById(1);
-//		
-////		System.out.println(form.getModules());
-//
-//		Module m = new Module("Spring",LocalDate.of(2023, 1, 25),LocalDate.of(2023, 2, 1),form);
-//		
-//		if(moduleRepo.create(m)) {
-//			System.out.println("Module ok");
-//			
-//			form = formateurRepo.findByIdAndFetchModules(1);
-//			System.out.println("---------------");
-//			
-//			System.out.println(form.getModules());
-//			
-//		} else {
-//			System.out.println("module ko");
+		s.getModules().add(m);
+		stagiaireRepo.update(s);
+
+		
+		
+		
+		
+		// Read with ManyToMany Stagiaire
+//		Stagiaire s = stagiaireRepo.findByIdAndFetchModules(1);
+//		System.out.println(s);
+//		System.out.println("------------");
+////		System.out.println(s.getModules());
+//		for(Module m : s.getModules()) {
+//			Formateur f = m.getFormateur();
+//			System.out.println(m.getLibelle()+" : "+f);
 //		}
 		
 //		Menu.start();

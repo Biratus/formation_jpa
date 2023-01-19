@@ -17,7 +17,7 @@ public class Menu {
 				register();
 			} else if (choice == 2) {
 				login();
-				choice = 3; // Quitte
+				choice = 3; // Quitter
 			}
 		} while (choice != 3);
 		System.out.println("Aurevoir.");
@@ -54,12 +54,7 @@ public class Menu {
 			System.out.println("Votre mot de passe : ");
 			String mdp = sc.next();
 			if (Main.userRepo.findByUsername(identifiant).size() == 0) {
-				List<User> allUsers = Main.userRepo.findAllJPQL();
-				Integer id = 0;
-				if (!allUsers.isEmpty())
-					id = allUsers.get(allUsers.size() - 1).getId() + 1;
-
-				Main.userRepo.create(new User(id, identifiant, mdp));
+				Main.userRepo.create(new User(identifiant, mdp));
 				break;
 			} else {
 				System.out.println("Le nom d'utilisateur " + identifiant + " existe déjà. Veuillez réessayer");
